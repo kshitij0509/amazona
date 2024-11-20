@@ -1,7 +1,11 @@
 import { getproduct } from "../api";
 import { getCartItems } from "../localStorage";
-import { parseRequestUrl } from "../utils";
-const addToCart = (item, forceUpdate = false) => {
+import { parseRequestUrl,rerender } from "../utils";
+import { setCartItems } from "../localStorage";
+
+
+
+const addToCart = (item, forceUpdate = false) => {  
   let cartItems = getCartItems();
   const existItem = cartItems.find((x) => x.product === item.product);
   if (existItem) {
@@ -12,18 +16,29 @@ const addToCart = (item, forceUpdate = false) => {
     }
   } else {
     cartItems = [...cartItems, item];
+  }  
+   setCartItems(cartItems);
+
+  if(forceUpdate){
+    rerender(CartScreen)
   }
-  setCartItems(cartItems);
-  if (forceUpdate) {
-    rerender(CartScreen);
-  }
+ 
 };
 const CartScreen = {
-  after_render: () => {},
+  after_render: () => {
+    const qtySelects = document.getElementsByClassName("qty-select");
+    Array.from(qtySelects).forEach((qtySelects)=>{
+      qtySelects.addEventListener('change',(e)=>{
+        const items = getCartItems().find((x)=>x.product===qtySelect.id);
+        addToCart({...items,qty:Number(e.target.value)},true)
+      })
+    })
+  },
   render: async () => {
     const request = parseRequestUrl();
     if (request.id) {
       const product = await getproduct(request.id);
+      
       addToCart({
         product: product._id,
         name: product.name,
@@ -33,7 +48,70 @@ const CartScreen = {
         qty: 1,
       });
     }
-    return `<div>Cart Screen</div>`;
+
+    const cartItems = getCartItems();
+    
+   return `
+   <div class ="cart">
+     <div class = "cart-list">
+      <ul class ="cart-list-container">
+       <li>
+          <h3>Shopping Cart</h3>
+          <div>Price</div>
+        </li>
+        ${
+          cartItems.length===0?
+          '<div>Cart is empty.<a href = "/#/">Go Shopping</a>':
+          cartItems.map(item=>`
+            <li>
+             <div class="cart-image">
+               <img src="${item.image}" alt = "${item.name}"/>
+              </div>
+               <div class ="cart-name">
+                <div>
+                 <a href = "/#/product/${item.product}">
+                  ${item.name}
+                  </a>
+                   </div>
+                     <div>
+                  Qty: 
+                  <select class="qty-select" id="${item.product}">
+                    ${
+                    [...Array(item.countInStock).keys()].map((x) =>item.qty === x + 1
+                      ? `<option selected value="${x + 1}">${x + 1}</option>`
+                      : `<option  value="${x + 1}">${x + 1}</option>`
+                  )}  
+                  </select>
+                  <button type="button" class="delete-button" id="${
+                    item.product
+                  }">
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <div class =  "cart-price">
+              ₹ ${item.price}
+              </div>
+            </li>  
+            `).join('\n')
+        }
+       </ul>
+     
+     </div>
+     <div class = "cart-action">
+        <h3>
+        Subtotal( ${cartItems.reduce((a,c)=>a+c.qty,0)} items)
+        :₹${cartItems.reduce((a,c)=>a+c.price*c.qty,0)}
+          </h3>
+          <button id = "checkout-button" class = "primary fw">
+            Proceed to checkout
+           </button>
+       </div>
+   
+   </div>
+   
+   `
+
   },
 };
 

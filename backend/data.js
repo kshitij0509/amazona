@@ -8,7 +8,7 @@ export default {
       brand: "cobb",
       rating: 4,
       numReviews: 10,
-      countInStock: 9,
+      countInStock: 4,
     },
     {
       _id: "2",
@@ -18,7 +18,7 @@ export default {
       brand: "Symbol Premium",
       rating: 4.5,
       numReviews: 10,
-      countInstock: 9,
+      countInStock: 6,
     },
     {
       _id: "3",
@@ -28,7 +28,7 @@ export default {
       brand: "Peter England",
       rating: 5,
       numReviews: 10,
-      countInstock: 9,
+      countInStock: 9,
     },
     {
       _id: "4",
@@ -38,7 +38,7 @@ export default {
       brand: "Bewakoof",
       rating: 3.5,
       numReviews: 10,
-      countInstock: 9,
+      countInStock: 9,
     },
     {
       _id: "5",
@@ -48,7 +48,7 @@ export default {
       brand: "Columbia",
       rating: 5,
       numReviews: 10,
-      countInstock: 9,
+      countInStock: 8,
     },
     {
       _id: "6",
@@ -58,7 +58,7 @@ export default {
       brand: "GRECIILOOKS",
       rating: 2.5,
       numReviews: 10,
-      countInstock: 9,
+      countInStock: 7,
     },
   ],
 };

@@ -14,10 +14,11 @@ const router = async () => {
   const parseUrl =
     (request.resource ? `/${request.resource}` : "/") +
     (request.id ? "/:id" : "") +
-    (request.verb ? `/${request.verb}` : "");
+    (request.verb ? `/${request.verb}` : "");    
   const screen = routes[parseUrl] ? routes[parseUrl] : ErrorScreen;
   const main = document.getElementById("main-container");
   main.innerHTML = await screen.render();
+  if(parseUrl!='/')
   await screen.after_render();
 };
 window.addEventListener("load", router);
