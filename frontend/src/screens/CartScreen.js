@@ -7,7 +7,11 @@ import { setCartItems } from "../localStorage";
 
 const addToCart = (item, forceUpdate = false) => {  
   let cartItems = getCartItems();
+  // console.log("cartitems>>>>>>>>>>>",cartItems);
+  
   const existItem = cartItems.find((x) => x.product === item.product);
+  // console.log("existitems>>>>>>",existItem);
+  
   if (existItem) {
     if (forceUpdate) {
       cartItems = cartItems.map((x) =>
@@ -17,21 +21,40 @@ const addToCart = (item, forceUpdate = false) => {
   } else {
     cartItems = [...cartItems, item];
   }  
-   setCartItems(cartItems);
+  setCartItems(cartItems);
 
   if(forceUpdate){
     rerender(CartScreen)
   }
- 
 };
+  const removeFromCart = (id)=>{
+    setCartItems(getCartItems().filter((x)=>x.product!==id));
+    if(id===parseRequestUrl().id){
+      document.location.hash = '/cart';
+    }else{
+      rerender(CartScreen)
+    }
+  }
+
+
+
 const CartScreen = {
   after_render: () => {
     const qtySelects = document.getElementsByClassName("qty-select");
-    Array.from(qtySelects).forEach((qtySelects)=>{
-      qtySelects.addEventListener('change',(e)=>{
-        const items = getCartItems().find((x)=>x.product===qtySelect.id);
-        addToCart({...items,qty:Number(e.target.value)},true)
+    Array.from(qtySelects).forEach(qtySelect=>{
+      qtySelect.addEventListener('change',(e)=>{
+        const item  = getCartItems().find((x)=>x.product===qtySelect.id);
+        addToCart({...item,qty:Number(e.target.value)},true)
+      });
+    });
+    const deleteButtons = document.getElementsByClassName('delete-button');
+    Array.from(deleteButtons).forEach((deleteButton)=>{
+      deleteButton.addEventListener('click',()=>{
+        removeFromCart(deleteButton.id);
       })
+    })
+    document.getElementById("checkout-button").addEventListener("click",()=>{
+      document.location.hash = "/signin";
     })
   },
   render: async () => {
