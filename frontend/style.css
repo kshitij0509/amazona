@@ -73,12 +73,19 @@ header a:hover{
 .brand a {
   font-size: 3rem;
 }
-.signin{
-  margin-right: 1rem ;
+.container {
+  display: flex; /* Enables flexbox layout */
+  align-items: center; /* Vertically aligns items in the center */
 }
-/* .cart{
+
+.signin {
   margin-right: 1rem;
-} */
+}
+
+.cart {
+  margin-right: 1rem;
+}
+
 footer{
   background-color: #203040;
   display: flex;
